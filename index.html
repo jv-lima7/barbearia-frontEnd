@@ -446,7 +446,13 @@
 
   .time-slot:hover { border-color: rgba(200,169,110,0.5); background: var(--surface2); }
   .time-slot.selected { border-color: var(--gold); background: var(--surface2); color: var(--gold); }
-  .time-slot.occupied { opacity: .3; cursor: not-allowed; text-decoration: line-through; }
+  .time-slot.occupied { 
+    border-color: #c0392b;
+    color: #c0392b;
+    background: rgba(192,57,43,0.1);
+    cursor: not-allowed;
+    text-decoration: line-through;
+  }
 
   /* CLIENT FORM */
   .form-row {
@@ -1293,12 +1299,9 @@ async function carregarHorarios() {
   // Buscar horários ocupados
   let ocupados = [];
   try {
-    const res = await fetch(`${API}/agendamentos?barbeiroId=${estado.barbeiro.id}&data=${data}`, {
-      headers: authHeader ? { 'Authorization': authHeader } : {}
-    });
+    const res = await fetch(`${API}/agendamentos/horarios-ocupados?barbeiroId=${estado.barbeiro.id}&data=${data}`);
     if (res.ok) {
-      const agendamentos = await res.json();
-      ocupados = agendamentos.map(a => a.dataHora.substring(11, 16));
+      ocupados = await res.json();
     }
   } catch {}
 

@@ -1,834 +1,1987 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Barbearia Valter Cortes — Agendamento</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --black: #0a0a0a;
-    --white: #f5f3ef;
-    --cream: #e8e4dc;
-    --gray: #888;
-    --light-gray: #d0ccc4;
-    --border: rgba(255,255,255,0.1);
-    --gold: #ffffff;
-    --gold2: #e0e0e0;
-    --surface: #141414;
-    --surface2: #1c1c1c;
-    --danger: #c0392b;
-    --success: #27ae60;
-  }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Barbearia Valter Cortes — Agendamento</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --black: #0a0a0a;
+        --white: #f5f3ef;
+        --cream: #e8e4dc;
+        --gray: #888;
+        --light-gray: #d0ccc4;
+        --border: rgba(255, 255, 255, 0.1);
+        --gold: #ffffff;
+        --gold2: #e0e0e0;
+        --surface: #141414;
+        --surface2: #1c1c1c;
+        --danger: #c0392b;
+        --success: #27ae60;
+      }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
 
-  body {
-    font-family: 'Montserrat', sans-serif;
-    background: var(--black);
-    color: var(--white);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+      body {
+        font-family: "Montserrat", sans-serif;
+        background: var(--black);
+        color: var(--white);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
 
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 999;
-    opacity: .4;
-  }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 999;
+        opacity: 0.4;
+      }
 
-  .page { display: none; min-height: 100vh; flex-direction: column; }
-  .page.active { display: flex; }
+      .page {
+        display: none;
+        min-height: 100vh;
+        flex-direction: column;
+      }
+      .page.active {
+        display: flex;
+      }
 
-  #page-booking { position: relative; background: var(--black); }
+      #page-booking {
+        position: relative;
+        background: var(--black);
+      }
 
-  .hero {
-    position: relative;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 24px;
-    text-align: center;
-    overflow: hidden;
-  }
+      .hero {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 24px;
+        text-align: center;
+        overflow: hidden;
+      }
 
-  .hero-bg {
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,169,110,0.06) 0%, transparent 60%),
-                radial-gradient(ellipse 60% 40% at 50% 100%, rgba(200,169,110,0.04) 0%, transparent 50%);
-  }
+      .hero-bg {
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(
+            ellipse 80% 60% at 50% 0%,
+            rgba(200, 169, 110, 0.06) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse 60% 40% at 50% 100%,
+            rgba(200, 169, 110, 0.04) 0%,
+            transparent 50%
+          );
+      }
 
-  .hero-lines {
-    position: absolute; inset: 0;
-    background-image: linear-gradient(rgba(200,169,110,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(200,169,110,0.04) 1px, transparent 1px);
-    background-size: 60px 60px;
-    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
-  }
+      .hero-lines {
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(200, 169, 110, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(200, 169, 110, 0.04) 1px, transparent 1px);
+        background-size: 60px 60px;
+        mask-image: radial-gradient(
+          ellipse at center,
+          black 30%,
+          transparent 80%
+        );
+      }
 
-  .logo-mark {
-    width: 100px; height: 100px; border-radius: 50%;
-    background: var(--white);
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 32px;
-    position: relative; z-index: 1;
-    box-shadow: 0 0 60px rgba(200,169,110,0.15);
-    animation: fadeUp .8s ease both;
-  }
+      .logo-mark {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 32px;
+        position: relative;
+        z-index: 1;
+        box-shadow: 0 0 60px rgba(200, 169, 110, 0.15);
+        animation: fadeUp 0.8s ease both;
+      }
 
-  .logo-initials { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 600; color: var(--black); letter-spacing: 2px; }
+      .logo-initials {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 36px;
+        font-weight: 600;
+        color: var(--black);
+        letter-spacing: 2px;
+      }
 
-  .hero-eyebrow { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; position: relative; z-index: 1; animation: fadeUp .8s ease .1s both; }
+      .hero-eyebrow {
+        font-size: 10px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 16px;
+        position: relative;
+        z-index: 1;
+        animation: fadeUp 0.8s ease 0.1s both;
+      }
 
-  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(48px, 8vw, 96px); font-weight: 300; line-height: .95; letter-spacing: -1px; color: var(--white); position: relative; z-index: 1; animation: fadeUp .8s ease .2s both; }
-  .hero-title em { font-style: italic; color: var(--gold); }
+      .hero-title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(48px, 8vw, 96px);
+        font-weight: 300;
+        line-height: 0.95;
+        letter-spacing: -1px;
+        color: var(--white);
+        position: relative;
+        z-index: 1;
+        animation: fadeUp 0.8s ease 0.2s both;
+      }
+      .hero-title em {
+        font-style: italic;
+        color: var(--gold);
+      }
 
-  .hero-sub { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--gray); margin-top: 20px; position: relative; z-index: 1; animation: fadeUp .8s ease .3s both; }
+      .hero-sub {
+        font-size: 11px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--gray);
+        margin-top: 20px;
+        position: relative;
+        z-index: 1;
+        animation: fadeUp 0.8s ease 0.3s both;
+      }
 
-  .hero-divider { width: 1px; height: 60px; background: linear-gradient(to bottom, transparent, var(--gold), transparent); margin: 40px auto; position: relative; z-index: 1; animation: fadeUp .8s ease .4s both; }
+      .hero-divider {
+        width: 1px;
+        height: 60px;
+        background: linear-gradient(
+          to bottom,
+          transparent,
+          var(--gold),
+          transparent
+        );
+        margin: 40px auto;
+        position: relative;
+        z-index: 1;
+        animation: fadeUp 0.8s ease 0.4s both;
+      }
 
-  .hero-cta { display: inline-flex; align-items: center; gap: 12px; background: none; border: 1px solid var(--gold); color: var(--gold); font-family: 'Montserrat', sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; padding: 18px 40px; cursor: pointer; transition: background .3s, color .3s; position: relative; z-index: 1; animation: fadeUp .8s ease .5s both; }
-  .hero-cta:hover { background: var(--gold); color: var(--black); }
+      .hero-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        background: none;
+        border: 1px solid var(--gold);
+        color: var(--gold);
+        font-family: "Montserrat", sans-serif;
+        font-size: 11px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        padding: 18px 40px;
+        cursor: pointer;
+        transition:
+          background 0.3s,
+          color 0.3s;
+        position: relative;
+        z-index: 1;
+        animation: fadeUp 0.8s ease 0.5s both;
+      }
+      .hero-cta:hover {
+        background: var(--gold);
+        color: var(--black);
+      }
 
-  .hero-info { display: flex; gap: 40px; margin-top: 60px; position: relative; z-index: 1; animation: fadeUp .8s ease .6s both; flex-wrap: wrap; justify-content: center; }
-  .hero-info-item { text-align: center; }
-  .hero-info-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); margin-bottom: 6px; }
-  .hero-info-value { font-family: 'Cormorant Garamond', serif; font-size: 16px; color: var(--white); font-weight: 300; }
+      .hero-info {
+        display: flex;
+        gap: 40px;
+        margin-top: 60px;
+        position: relative;
+        z-index: 1;
+        animation: fadeUp 0.8s ease 0.6s both;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .hero-info-item {
+        text-align: center;
+      }
+      .hero-info-label {
+        font-size: 9px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray);
+        margin-bottom: 6px;
+      }
+      .hero-info-value {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 16px;
+        color: var(--white);
+        font-weight: 300;
+      }
 
-  .booking-section { background: var(--surface); border-top: 1px solid var(--border); padding: 80px 24px; }
-  .booking-container { max-width: 800px; margin: 0 auto; }
-  .section-eyebrow { font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
-  .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 5vw, 56px); font-weight: 300; line-height: 1; margin-bottom: 48px; }
+      .booking-section {
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        padding: 80px 24px;
+      }
+      .booking-container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      .section-eyebrow {
+        font-size: 9px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 12px;
+      }
+      .section-title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(32px, 5vw, 56px);
+        font-weight: 300;
+        line-height: 1;
+        margin-bottom: 48px;
+      }
 
-  .steps { display: flex; gap: 0; margin-bottom: 48px; border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
-  .steps::-webkit-scrollbar { display: none; }
-  .step { flex: 1; padding: 20px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 2px solid transparent; margin-bottom: -1px; opacity: .4; white-space: nowrap; transition: opacity .3s ease, transform .3s ease; }
-  .step.active { opacity: 1; border-bottom-color: var(--gold); }
-  .step.done { opacity: .7; }
-  .step-num { width: 28px; height: 28px; border: 1px solid var(--gray); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; }
-  .step.active .step-num { border-color: var(--gold); color: var(--gold); }
-  .step.done .step-num { background: var(--gold); border-color: var(--gold); color: var(--black); }
-  .step-label { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+      .steps {
+        display: flex;
+        gap: 0;
+        margin-bottom: 48px;
+        border-bottom: 1px solid var(--border);
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .steps::-webkit-scrollbar {
+        display: none;
+      }
+      .step {
+        flex: 1;
+        padding: 20px 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+        opacity: 0.4;
+        white-space: nowrap;
+        transition:
+          opacity 0.3s ease,
+          transform 0.3s ease;
+      }
+      .step.active {
+        opacity: 1;
+        border-bottom-color: var(--gold);
+      }
+      .step.done {
+        opacity: 0.7;
+      }
+      .step-num {
+        width: 28px;
+        height: 28px;
+        border: 1px solid var(--gray);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        flex-shrink: 0;
+      }
+      .step.active .step-num {
+        border-color: var(--gold);
+        color: var(--gold);
+      }
+      .step.done .step-num {
+        background: var(--gold);
+        border-color: var(--gold);
+        color: var(--black);
+      }
+      .step-label {
+        font-size: 11px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
 
-  .form-panel { display: none; }
-  .form-panel.active { display: block; animation: fadeUp .4s ease; }
+      .form-panel {
+        display: none;
+      }
+      .form-panel.active {
+        display: block;
+        animation: fadeUp 0.4s ease;
+      }
 
-  .barber-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 32px; }
-  .barber-card { border: 1px solid var(--border); padding: 32px 24px; cursor: pointer; transition: border-color .2s, background .2s; text-align: center; position: relative; }
-  .barber-card:hover { border-color: rgba(200,169,110,0.5); background: var(--surface2); }
-  .barber-card.selected { border-color: var(--gold); background: var(--surface2); }
-  .barber-avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--border); margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--gold); font-weight: 300; }
-  .barber-name { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 400; margin-bottom: 4px; }
-  .barber-role { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); }
-  .barber-check { position: absolute; top: 16px; right: 16px; width: 20px; height: 20px; border-radius: 50%; background: var(--gold); display: none; align-items: center; justify-content: center; font-size: 10px; color: var(--black); }
-  .barber-card.selected .barber-check { display: flex; }
+      .barber-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+        margin-bottom: 32px;
+      }
+      .barber-card {
+        border: 1px solid var(--border);
+        padding: 32px 24px;
+        cursor: pointer;
+        transition:
+          border-color 0.2s,
+          background 0.2s;
+        text-align: center;
+        position: relative;
+      }
+      .barber-card:hover {
+        border-color: rgba(200, 169, 110, 0.5);
+        background: var(--surface2);
+      }
+      .barber-card.selected {
+        border-color: var(--gold);
+        background: var(--surface2);
+      }
+      .barber-avatar {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        margin: 0 auto 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Cormorant Garamond", serif;
+        font-size: 28px;
+        color: var(--gold);
+        font-weight: 300;
+      }
+      .barber-name {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 24px;
+        font-weight: 400;
+        margin-bottom: 4px;
+      }
+      .barber-role {
+        font-size: 9px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray);
+      }
+      .barber-check {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--gold);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        color: var(--black);
+      }
+      .barber-card.selected .barber-check {
+        display: flex;
+      }
 
-  .service-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px; }
-  .service-item { border: 1px solid var(--border); padding: 20px 24px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: border-color .2s, background .2s; }
-  .service-item:hover { border-color: rgba(200,169,110,0.5); background: var(--surface2); }
-  .service-item.selected { border-color: var(--gold); background: var(--surface2); }
-  .service-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; }
-  .service-price { font-size: 11px; letter-spacing: 1px; color: var(--gold); }
+      .service-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 32px;
+      }
+      .service-item {
+        border: 1px solid var(--border);
+        padding: 20px 24px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition:
+          border-color 0.2s,
+          background 0.2s;
+      }
+      .service-item:hover {
+        border-color: rgba(200, 169, 110, 0.5);
+        background: var(--surface2);
+      }
+      .service-item.selected {
+        border-color: var(--gold);
+        background: var(--surface2);
+      }
+      .service-name {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 20px;
+        font-weight: 400;
+      }
+      .service-price {
+        font-size: 11px;
+        letter-spacing: 1px;
+        color: var(--gold);
+      }
 
-  .date-picker-wrapper { margin-bottom: 32px; }
-  .date-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--white); font-family: 'Montserrat', sans-serif; font-size: 14px; padding: 16px 20px; outline: none; transition: border-color .2s; color-scheme: dark; margin-bottom: 0; }
-  .date-input:focus { border-color: var(--gold); }
+      .date-picker-wrapper {
+        margin-bottom: 32px;
+      }
+      .date-input {
+        width: 100%;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        color: var(--white);
+        font-family: "Montserrat", sans-serif;
+        font-size: 14px;
+        padding: 16px 20px;
+        outline: none;
+        transition: border-color 0.2s;
+        color-scheme: dark;
+        margin-bottom: 0;
+      }
+      .date-input:focus {
+        border-color: var(--gold);
+      }
 
-  .time-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; margin-bottom: 32px; }
-  .time-slot { border: 1px solid var(--border); padding: 12px 8px; text-align: center; cursor: pointer; font-size: 13px; letter-spacing: 1px; transition: border-color .2s, background .2s; }
-  .time-slot:hover { border-color: rgba(200,169,110,0.5); background: var(--surface2); }
-  .time-slot.selected { border-color: var(--gold); background: var(--surface2); color: var(--gold); }
-  .time-slot.occupied { border-color: #c0392b; color: #c0392b; background: rgba(192,57,43,0.1); cursor: not-allowed; text-decoration: line-through; }
+      .time-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        gap: 8px;
+        margin-bottom: 32px;
+      }
+      .time-slot {
+        border: 1px solid var(--border);
+        padding: 12px 8px;
+        text-align: center;
+        cursor: pointer;
+        font-size: 13px;
+        letter-spacing: 1px;
+        transition:
+          border-color 0.2s,
+          background 0.2s;
+      }
+      .time-slot:hover {
+        border-color: rgba(200, 169, 110, 0.5);
+        background: var(--surface2);
+      }
+      .time-slot.selected {
+        border-color: var(--gold);
+        background: var(--surface2);
+        color: var(--gold);
+      }
+      .time-slot.occupied {
+        border-color: #c0392b;
+        color: #c0392b;
+        background: rgba(192, 57, 43, 0.1);
+        cursor: not-allowed;
+        text-decoration: line-through;
+      }
 
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-  .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-  .form-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); }
-  .form-input { background: var(--surface2); border: 1px solid var(--border); color: var(--white); font-family: 'Montserrat', sans-serif; font-size: 14px; padding: 16px 20px; outline: none; transition: border-color .2s; width: 100%; margin-bottom: 0; }
-  .form-input:focus { border-color: var(--gold); }
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      .form-label {
+        font-size: 9px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray);
+      }
+      .form-input {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        color: var(--white);
+        font-family: "Montserrat", sans-serif;
+        font-size: 14px;
+        padding: 16px 20px;
+        outline: none;
+        transition: border-color 0.2s;
+        width: 100%;
+        margin-bottom: 0;
+      }
+      .form-input:focus {
+        border-color: var(--gold);
+      }
 
-  .summary-box { border: 1px solid var(--border); padding: 28px; margin-bottom: 32px; background: var(--surface2); }
-  .summary-title { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
-  .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-  .summary-row:last-child { border-bottom: none; }
-  .summary-row-label { color: var(--gray); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
-  .summary-row-value { font-family: 'Cormorant Garamond', serif; font-size: 18px; }
+      .summary-box {
+        border: 1px solid var(--border);
+        padding: 28px;
+        margin-bottom: 32px;
+        background: var(--surface2);
+      }
+      .summary-title {
+        font-size: 9px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 20px;
+      }
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 13px;
+      }
+      .summary-row:last-child {
+        border-bottom: none;
+      }
+      .summary-row-label {
+        color: var(--gray);
+        font-size: 11px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      .summary-row-value {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 18px;
+      }
 
-  .btn-primary { width: 100%; background: var(--gold); color: var(--black); border: none; font-family: 'Montserrat', sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; padding: 20px; cursor: pointer; transition: background .2s; }
-  .btn-primary:hover { background: var(--gold2); }
-  .btn-ghost { width: 100%; background: transparent; color: var(--gray); border: 1px solid var(--border); font-family: 'Montserrat', sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; padding: 16px; cursor: pointer; transition: border-color .2s, color .2s; margin-top: 12px; }
-  .btn-ghost:hover { border-color: var(--gray); color: var(--white); }
+      .btn-primary {
+        width: 100%;
+        background: var(--gold);
+        color: var(--black);
+        border: none;
+        font-family: "Montserrat", sans-serif;
+        font-size: 11px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        padding: 20px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .btn-primary:hover {
+        background: var(--gold2);
+      }
+      .btn-ghost {
+        width: 100%;
+        background: transparent;
+        color: var(--gray);
+        border: 1px solid var(--border);
+        font-family: "Montserrat", sans-serif;
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 16px;
+        cursor: pointer;
+        transition:
+          border-color 0.2s,
+          color 0.2s;
+        margin-top: 12px;
+      }
+      .btn-ghost:hover {
+        border-color: var(--gray);
+        color: var(--white);
+      }
 
-  .msg { padding: 14px 20px; font-size: 12px; letter-spacing: .5px; margin-bottom: 20px; display: none; }
-  .msg.error { border: 1px solid var(--danger); color: var(--danger); background: rgba(192,57,43,0.1); display: block; }
-  .msg.success { border: 1px solid var(--success); color: var(--success); background: rgba(39,174,96,0.1); display: block; }
+      .msg {
+        padding: 14px 20px;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+        margin-bottom: 20px;
+        display: none;
+      }
+      .msg.error {
+        border: 1px solid var(--danger);
+        color: var(--danger);
+        background: rgba(192, 57, 43, 0.1);
+        display: block;
+      }
+      .msg.success {
+        border: 1px solid var(--success);
+        color: var(--success);
+        background: rgba(39, 174, 96, 0.1);
+        display: block;
+      }
 
-  #page-success { align-items: center; justify-content: center; text-align: center; padding: 60px 24px; background: var(--black); }
-  .success-icon { width: 80px; height: 80px; border: 1px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 32px; font-size: 28px; animation: scaleIn .5s ease; }
-  @keyframes scaleIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-  .success-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(36px, 6vw, 64px); font-weight: 300; margin-bottom: 16px; }
-  .success-sub { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); margin-bottom: 48px; }
-  .success-details { border: 1px solid var(--border); padding: 28px; max-width: 400px; margin: 0 auto 48px; text-align: left; }
+      #page-success {
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 60px 24px;
+        background: var(--black);
+      }
+      .success-icon {
+        width: 80px;
+        height: 80px;
+        border: 1px solid var(--gold);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 32px;
+        font-size: 28px;
+        animation: scaleIn 0.5s ease;
+      }
+      @keyframes scaleIn {
+        from {
+          transform: scale(0);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      .success-title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(36px, 6vw, 64px);
+        font-weight: 300;
+        margin-bottom: 16px;
+      }
+      .success-sub {
+        font-size: 12px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray);
+        margin-bottom: 48px;
+      }
+      .success-details {
+        border: 1px solid var(--border);
+        padding: 28px;
+        max-width: 400px;
+        margin: 0 auto 48px;
+        text-align: left;
+      }
 
-  .panel-link { text-align: center; padding: 24px; border-top: 1px solid var(--border); background: var(--surface); }
-  .panel-link a { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); text-decoration: none; cursor: pointer; }
-  .panel-link a:hover { color: var(--gold); }
+      .panel-link {
+        text-align: center;
+        padding: 24px;
+        border-top: 1px solid var(--border);
+        background: var(--surface);
+      }
+      .panel-link a {
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray);
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .panel-link a:hover {
+        color: var(--gold);
+      }
 
-  #page-painel { background: var(--black); }
-  .painel-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 24px 40px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-  .painel-logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; letter-spacing: 2px; color: var(--gold); }
-  .painel-body { padding: 48px 40px; max-width: 1100px; margin: 0 auto; }
-  .painel-title { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 300; margin-bottom: 8px; }
-  .painel-sub { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); margin-bottom: 40px; }
-  .painel-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-bottom: 32px;
-    align-items: flex-start;
-  }
-  /* VISTA TABS */
-  .vista-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 32px; }
-  .vista-tab { background: none; border: none; border-bottom: 2px solid transparent; color: var(--gray); font-family: 'Montserrat', sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; padding: 14px 24px; cursor: pointer; margin-bottom: -1px; transition: color .2s, border-color .2s; white-space: nowrap; }
-  .vista-tab:hover { color: var(--white); }
-  .vista-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
-  .vista-panel { display: none; }
-  .vista-panel.active { display: block; animation: fadeUp .3s ease; }
+      #page-painel {
+        background: var(--black);
+      }
+      .painel-header {
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        padding: 24px 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .painel-logo {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 22px;
+        font-weight: 400;
+        letter-spacing: 2px;
+        color: var(--gold);
+      }
+      .painel-body {
+        padding: 48px 40px;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .painel-title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 48px;
+        font-weight: 300;
+        margin-bottom: 8px;
+      }
+      .painel-sub {
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray);
+        margin-bottom: 40px;
+      }
+      .painel-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 32px;
+        align-items: flex-start;
+      }
+      /* VISTA TABS */
+      .vista-tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 32px;
+      }
+      .vista-tab {
+        background: none;
+        border: none;
+        border-bottom: 2px solid transparent;
+        color: var(--gray);
+        font-family: "Montserrat", sans-serif;
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 14px 24px;
+        cursor: pointer;
+        margin-bottom: -1px;
+        transition:
+          color 0.2s,
+          border-color 0.2s;
+        white-space: nowrap;
+      }
+      .vista-tab:hover {
+        color: var(--white);
+      }
+      .vista-tab.active {
+        color: var(--gold);
+        border-bottom-color: var(--gold);
+      }
+      .vista-panel {
+        display: none;
+      }
+      .vista-panel.active {
+        display: block;
+        animation: fadeUp 0.3s ease;
+      }
 
-  .painel-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 32px; }
-  .painel-tab { background: none; border: none; border-bottom: 2px solid transparent; color: var(--gray); font-family: 'Montserrat', sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; padding: 16px 24px; cursor: pointer; margin-bottom: -1px; transition: color .2s, border-color .2s; white-space: nowrap; }
-  .painel-tab:hover { color: var(--white); }
-  .painel-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+      .painel-tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 32px;
+      }
+      .painel-tab {
+        background: none;
+        border: none;
+        border-bottom: 2px solid transparent;
+        color: var(--gray);
+        font-family: "Montserrat", sans-serif;
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 16px 24px;
+        cursor: pointer;
+        margin-bottom: -1px;
+        transition:
+          color 0.2s,
+          border-color 0.2s;
+        white-space: nowrap;
+      }
+      .painel-tab:hover {
+        color: var(--white);
+      }
+      .painel-tab.active {
+        color: var(--gold);
+        border-bottom-color: var(--gold);
+      }
 
-  .painel-date { background: var(--surface2); border: 1px solid var(--border); color: var(--white); font-family: 'Montserrat', sans-serif; font-size: 13px; padding: 12px 16px; outline: none; transition: border-color .2s; color-scheme: dark; }
-  .painel-date:focus { border-color: var(--gold); }
+      .painel-date {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        color: var(--white);
+        font-family: "Montserrat", sans-serif;
+        font-size: 13px;
+        padding: 12px 16px;
+        outline: none;
+        transition: border-color 0.2s;
+        color-scheme: dark;
+      }
+      .painel-date:focus {
+        border-color: var(--gold);
+      }
 
-  .painel-select {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--white);
-    font-family: 'Montserrat', sans-serif;
-    font-size: 13px;
-    padding: 12px 16px;
-    outline: none;
-    transition: border-color .2s;
-    cursor: pointer;
-    width: 260px;
-  }
-  .painel-select:focus { border-color: var(--gold); }
+      .painel-select {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        color: var(--white);
+        font-family: "Montserrat", sans-serif;
+        font-size: 13px;
+        padding: 12px 16px;
+        outline: none;
+        transition: border-color 0.2s;
+        cursor: pointer;
+        width: 260px;
+      }
+      .painel-select:focus {
+        border-color: var(--gold);
+      }
 
-  .agendamento-card { border: 1px solid var(--border); padding: 24px 28px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 16px; transition: border-color .2s; animation: fadeUp .3s ease; }
-  .agendamento-card:hover { border-color: rgba(200,169,110,0.3); }
-  .agendamento-hora { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; color: var(--gold); min-width: 80px; letter-spacing: -1px; }
-  .agendamento-divider { width: 1px; height: 40px; background: var(--border); }
-  .agendamento-info { flex: 1; }
-  .agendamento-cliente { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; margin-bottom: 4px; }
-  .agendamento-detalhes { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
+      .agendamento-card {
+        border: 1px solid var(--border);
+        padding: 24px 28px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        transition: border-color 0.2s;
+        animation: fadeUp 0.3s ease;
+      }
+      .agendamento-card:hover {
+        border-color: rgba(200, 169, 110, 0.3);
+      }
+      .agendamento-hora {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 32px;
+        font-weight: 300;
+        color: var(--gold);
+        min-width: 80px;
+        letter-spacing: -1px;
+      }
+      .agendamento-divider {
+        width: 1px;
+        height: 40px;
+        background: var(--border);
+      }
+      .agendamento-info {
+        flex: 1;
+      }
+      .agendamento-cliente {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 22px;
+        font-weight: 400;
+        margin-bottom: 4px;
+      }
+      .agendamento-detalhes {
+        font-size: 11px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--gray);
+      }
 
-  /* MENSAL */
-  .mes-stats {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 32px;
-    width: 260px;
-  }
-  .mes-stat {
-    border: 1px solid var(--border);
-    padding: 16px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+      /* MENSAL */
+      .mes-stats {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 32px;
+        width: 260px;
+      }
+      .mes-stat {
+        border: 1px solid var(--border);
+        padding: 16px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
 
-  .mes-stat-valor {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 32px;
-    font-weight: 300;
-    color: var(--gold);
-    line-height: 1;
-  }
+      .mes-stat-valor {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 32px;
+        font-weight: 300;
+        color: var(--gold);
+        line-height: 1;
+      }
 
-  .mes-stat-label {
-    font-size: 9px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--gray);
-  }
+      .mes-stat-label {
+        font-size: 9px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray);
+      }
 
-  .mes-agendamento-card { border: 1px solid var(--border); padding: 16px 24px; margin-bottom: 8px; display: flex; align-items: center; gap: 16px; transition: border-color .2s; }
-  .mes-agendamento-card:hover { border-color: rgba(255,255,255,0.2); }
-  .mes-data { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--gold); min-width: 120px; }
-  .mes-info { flex: 1; }
-  .mes-cliente { font-size: 14px; font-weight: 500; margin-bottom: 2px; }
-  .mes-detalhe { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
+      .mes-agendamento-card {
+        border: 1px solid var(--border);
+        padding: 16px 24px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        transition: border-color 0.2s;
+      }
+      .mes-agendamento-card:hover {
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+      .mes-data {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 20px;
+        color: var(--gold);
+        min-width: 120px;
+      }
+      .mes-info {
+        flex: 1;
+      }
+      .mes-cliente {
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 2px;
+      }
+      .mes-detalhe {
+        font-size: 11px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--gray);
+      }
 
-  .btn-cancel { background: none; border: 1px solid var(--border); color: var(--gray); font-family: 'Montserrat', sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; padding: 10px 20px; cursor: pointer; transition: border-color .2s, color .2s; white-space: nowrap; }
-  .btn-cancel:hover { border-color: var(--danger); color: var(--danger); }
+      .btn-cancel {
+        background: none;
+        border: 1px solid var(--border);
+        color: var(--gray);
+        font-family: "Montserrat", sans-serif;
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition:
+          border-color 0.2s,
+          color 0.2s;
+        white-space: nowrap;
+      }
+      .btn-cancel:hover {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
 
-  .empty-state { text-align: center; padding: 80px 24px; border: 1px solid var(--border); }
-  .empty-state-title { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; color: var(--gray); margin-bottom: 8px; }
-  .empty-state-sub { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(136,136,136,0.5); }
+      .empty-state {
+        text-align: center;
+        padding: 80px 24px;
+        border: 1px solid var(--border);
+      }
+      .empty-state-title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 32px;
+        font-weight: 300;
+        color: var(--gray);
+        margin-bottom: 8px;
+      }
+      .empty-state-sub {
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: rgba(136, 136, 136, 0.5);
+      }
 
-  #page-painel-login { align-items: center; justify-content: center; background: var(--black); }
-  .login-card { border: 1px solid var(--border); padding: 56px 48px; max-width: 420px; width: 100%; background: var(--surface); animation: fadeUp .4s ease; }
-  .login-eyebrow { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
-  .login-title { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; margin-bottom: 40px; }
+      #page-painel-login {
+        align-items: center;
+        justify-content: center;
+        background: var(--black);
+      }
+      .login-card {
+        border: 1px solid var(--border);
+        padding: 56px 48px;
+        max-width: 420px;
+        width: 100%;
+        background: var(--surface);
+        animation: fadeUp 0.4s ease;
+      }
+      .login-eyebrow {
+        font-size: 9px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 12px;
+      }
+      .login-title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 36px;
+        font-weight: 300;
+        margin-bottom: 40px;
+      }
 
-  .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface); border: 1px solid var(--border); padding: 14px 28px; font-size: 12px; letter-spacing: 1px; z-index: 1000; transition: transform .3s ease; white-space: nowrap; }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-  .toast.success { border-color: var(--success); color: var(--success); }
-  .toast.error { border-color: var(--danger); color: var(--danger); }
+      .toast {
+        position: fixed;
+        bottom: 32px;
+        left: 50%;
+        transform: translateX(-50%) translateY(80px);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        padding: 14px 28px;
+        font-size: 12px;
+        letter-spacing: 1px;
+        z-index: 1000;
+        transition: transform 0.3s ease;
+        white-space: nowrap;
+      }
+      .toast.show {
+        transform: translateX(-50%) translateY(0);
+      }
+      .toast.success {
+        border-color: var(--success);
+        color: var(--success);
+      }
+      .toast.error {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
 
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(24px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-  .footer { background: var(--surface); border-top: 1px solid var(--border); padding: 40px 24px; text-align: center; }
-  .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: var(--gold); letter-spacing: 3px; margin-bottom: 12px; }
-  .footer-text { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); line-height: 2; }
+      .footer {
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        padding: 40px 24px;
+        text-align: center;
+      }
+      .footer-logo {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 28px;
+        font-weight: 300;
+        color: var(--gold);
+        letter-spacing: 3px;
+        margin-bottom: 12px;
+      }
+      .footer-text {
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray);
+        line-height: 2;
+      }
 
-  @media (max-width: 768px) {
-    .form-row { grid-template-columns: 1fr; }
-    .painel-header { padding: 16px 20px; }
-    .painel-body { padding: 32px 16px; }
-    .painel-controls { flex-direction: column; }
-    .agendamento-card { flex-wrap: wrap; }
-    .agendamento-divider { display: none; }
-    .login-card { padding: 40px 24px; margin: 16px; }
-    .hero-info { gap: 24px; }
-    .step { flex: 0 0 auto; min-width: 140px; }
-    .mes-agendamento-card { flex-wrap: wrap; }
-    .mes-data { min-width: auto; }
-    .mes-stats { grid-template-columns: 1fr 1fr; }
-  }
-</style>
-</head>
-<body>
-
-<!-- BOOKING PAGE -->
-<div id="page-booking" class="page active">
-  <div class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-lines"></div>
-    <div class="logo-mark"><span class="logo-initials">VC</span></div>
-    <div class="hero-eyebrow">Est. 2020 · Nossa Sra. do Socorro — SE</div>
-    <h1 class="hero-title">Valter<br><em>Cortes</em></h1>
-    <p class="hero-sub">Barbearia & Estilo Masculino</p>
-    <div class="hero-divider"></div>
-    <button class="hero-cta" onclick="document.querySelector('.booking-section').scrollIntoView({behavior:'smooth'})">Agendar Horário</button>
-    <div class="hero-info">
-      <div class="hero-info-item"><div class="hero-info-label">Avaliação</div><div class="hero-info-value">5.0 ★ Google</div></div>
-      <div class="hero-info-item"><div class="hero-info-label">Endereço</div><div class="hero-info-value">R. Itaporanga d'Ajuda, 7</div></div>
-      <div class="hero-info-item"><div class="hero-info-label">Horário</div><div class="hero-info-value">Seg–Sáb · até 18h</div></div>
-      <div class="hero-info-item"><div class="hero-info-label">Contato</div><div class="hero-info-value">(79) 99837-1380</div></div>
-    </div>
-  </div>
-
-  <div class="booking-section">
-    <div class="booking-container">
-      <div class="section-eyebrow">Online</div>
-      <h2 class="section-title">Fazer Agendamento</h2>
-      <div id="booking-msg" class="msg"></div>
-      <div class="steps">
-        <div class="step active" id="step-1"><div class="step-num">1</div><div class="step-label">Profissional</div></div>
-        <div class="step" id="step-2"><div class="step-num">2</div><div class="step-label">Serviço</div></div>
-        <div class="step" id="step-3"><div class="step-num">3</div><div class="step-label">Data & Hora</div></div>
-        <div class="step" id="step-4"><div class="step-num">4</div><div class="step-label">Confirmação</div></div>
-      </div>
-
-      <div class="form-panel active" id="panel-1">
-        <div class="barber-grid" id="barber-grid"><div style="color:var(--gray);font-size:13px">Carregando profissionais...</div></div>
-        <button class="btn-primary" onclick="avancarPara2()">Continuar</button>
-      </div>
-
-      <div class="form-panel" id="panel-2">
-        <div class="service-list" id="service-list"><div style="color:var(--gray);font-size:13px">Carregando serviços...</div></div>
-        <button class="btn-primary" onclick="avancarPara3()">Continuar</button>
-        <button class="btn-ghost" onclick="voltarPara(1)">Voltar</button>
-      </div>
-
-      <div class="form-panel" id="panel-3">
-        <div class="date-picker-wrapper">
-          <div class="form-label" style="margin-bottom:8px">Selecione a data</div>
-          <input type="date" class="date-input" id="data-input" onchange="carregarHorarios()">
-        </div>
-        <div class="form-label" style="margin-bottom:12px">Horários disponíveis</div>
-        <div class="time-grid" id="time-grid"><div style="color:var(--gray);font-size:13px;grid-column:1/-1">Selecione uma data primeiro</div></div>
-        <button class="btn-primary" onclick="avancarPara4()">Continuar</button>
-        <button class="btn-ghost" onclick="voltarPara(2)">Voltar</button>
-      </div>
-
-      <div class="form-panel" id="panel-4">
-        <div class="summary-box" id="summary-box"></div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Nome completo</label>
-            <input type="text" class="form-input" id="nome-input" placeholder="Seu nome">
+      @media (max-width: 768px) {
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+        .painel-header {
+          padding: 16px 20px;
+        }
+        .painel-body {
+          padding: 32px 16px;
+        }
+        .painel-controls {
+          flex-direction: column;
+        }
+        .agendamento-card {
+          flex-wrap: wrap;
+        }
+        .agendamento-divider {
+          display: none;
+        }
+        .login-card {
+          padding: 40px 24px;
+          margin: 16px;
+        }
+        .hero-info {
+          gap: 24px;
+        }
+        .step {
+          flex: 0 0 auto;
+          min-width: 140px;
+        }
+        .mes-agendamento-card {
+          flex-wrap: wrap;
+        }
+        .mes-data {
+          min-width: auto;
+        }
+        .mes-stats {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- BOOKING PAGE -->
+    <div id="page-booking" class="page active">
+      <div class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-lines"></div>
+        <div class="logo-mark"><span class="logo-initials">VC</span></div>
+        <div class="hero-eyebrow">Est. 2020 · Nossa Sra. do Socorro — SE</div>
+        <h1 class="hero-title">Valter<br /><em>Cortes</em></h1>
+        <p class="hero-sub">Barbearia & Estilo Masculino</p>
+        <div class="hero-divider"></div>
+        <button
+          class="hero-cta"
+          onclick="
+            document
+              .querySelector('.booking-section')
+              .scrollIntoView({ behavior: 'smooth' })
+          "
+        >
+          Agendar Horário
+        </button>
+        <div class="hero-info">
+          <div class="hero-info-item">
+            <div class="hero-info-label">Avaliação</div>
+            <div class="hero-info-value">5.0 ★ Google</div>
           </div>
-          <div class="form-group">
-            <label class="form-label">Telefone</label>
-            <input type="tel" class="form-input" id="tel-input" placeholder="(79) 99999-9999" maxlength="15">
+          <div class="hero-info-item">
+            <div class="hero-info-label">Endereço</div>
+            <div class="hero-info-value">R. Itaporanga d'Ajuda, 7</div>
+          </div>
+          <div class="hero-info-item">
+            <div class="hero-info-label">Horário</div>
+            <div class="hero-info-value">Seg–Sáb · até 18h</div>
+          </div>
+          <div class="hero-info-item">
+            <div class="hero-info-label">Contato</div>
+            <div class="hero-info-value">(79) 99837-1380</div>
           </div>
         </div>
-        <button class="btn-primary" onclick="confirmarAgendamento()">Confirmar Agendamento</button>
-        <button class="btn-ghost" onclick="voltarPara(3)">Voltar</button>
       </div>
-    </div>
-  </div>
 
-  <div class="footer">
-    <div class="footer-logo">Valter Cortes</div>
-    <div class="footer-text">R. Itaporanga d'Ajuda, 7 · João Alves · Nossa Sra. do Socorro — SE<br>(79) 99837-1380 · Segunda a Sábado até as 18h</div>
-  </div>
-  <div class="panel-link"><a onclick="irPara('page-painel-login')">Acesso Profissional</a></div>
-</div>
+      <div class="booking-section">
+        <div class="booking-container">
+          <div class="section-eyebrow">Online</div>
+          <h2 class="section-title">Fazer Agendamento</h2>
+          <div id="booking-msg" class="msg"></div>
+          <div class="steps">
+            <div class="step active" id="step-1">
+              <div class="step-num">1</div>
+              <div class="step-label">Profissional</div>
+            </div>
+            <div class="step" id="step-2">
+              <div class="step-num">2</div>
+              <div class="step-label">Serviço</div>
+            </div>
+            <div class="step" id="step-3">
+              <div class="step-num">3</div>
+              <div class="step-label">Data & Hora</div>
+            </div>
+            <div class="step" id="step-4">
+              <div class="step-num">4</div>
+              <div class="step-label">Confirmação</div>
+            </div>
+          </div>
 
-<!-- SUCCESS -->
-<div id="page-success" class="page">
-  <div class="success-icon">✓</div>
-  <h2 class="success-title">Agendado!</h2>
-  <p class="success-sub">Seu horário foi reservado com sucesso</p>
-  <div class="success-details" id="success-details"></div>
-  <button class="btn-primary" style="max-width:320px" onclick="novoAgendamento()">Fazer Novo Agendamento</button>
-</div>
+          <div class="form-panel active" id="panel-1">
+            <div class="barber-grid" id="barber-grid">
+              <div style="color: var(--gray); font-size: 13px">
+                Carregando profissionais...
+              </div>
+            </div>
+            <button class="btn-primary" onclick="avancarPara2()">
+              Continuar
+            </button>
+          </div>
 
-<!-- PAINEL LOGIN -->
-<div id="page-painel-login" class="page">
-  <div class="login-card">
-    <div class="login-eyebrow">Área Restrita</div>
-    <h2 class="login-title">Painel Profissional</h2>
-    <div id="painel-login-msg" class="msg"></div>
-    <div class="form-group">
-      <label class="form-label">Usuário</label>
-      <input type="text" class="form-input" id="login-user" placeholder="Usuário">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Senha</label>
-      <div style="position:relative;">
-        <input type="password" class="form-input" id="login-pass" placeholder="••••••••" style="padding-right:90px;">
-        <button type="button" id="toggleSenhaBtn" onclick="toggleSenha()" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gray);font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;">Mostrar</button>
-      </div>
-    </div>
-    <button class="btn-primary" onclick="loginPainel()" style="margin-top:8px">Entrar</button>
-    <button class="btn-ghost" onclick="irPara('page-booking')">Voltar</button>
-  </div>
-</div>
+          <div class="form-panel" id="panel-2">
+            <div class="service-list" id="service-list">
+              <div style="color: var(--gray); font-size: 13px">
+                Carregando serviços...
+              </div>
+            </div>
+            <button class="btn-primary" onclick="avancarPara3()">
+              Continuar
+            </button>
+            <button class="btn-ghost" onclick="voltarPara(1)">Voltar</button>
+          </div>
 
-<!-- PAINEL ADMIN -->
-<div id="page-painel" class="page">
-  <div class="painel-header">
-    <div class="painel-logo">Valter Cortes · Painel</div>
-    <button class="btn-cancel" onclick="logoutPainel()">Sair</button>
-  </div>
+          <div class="form-panel" id="panel-3">
+            <div class="date-picker-wrapper">
+              <div class="form-label" style="margin-bottom: 8px">
+                Selecione a data
+              </div>
+              <input
+                type="date"
+                class="date-input"
+                id="data-input"
+                onchange="carregarHorarios()"
+              />
+            </div>
+            <div class="form-label" style="margin-bottom: 12px">
+              Horários disponíveis
+            </div>
+            <div class="time-grid" id="time-grid">
+              <div
+                style="color: var(--gray); font-size: 13px; grid-column: 1/-1"
+              >
+                Selecione uma data primeiro
+              </div>
+            </div>
+            <button class="btn-primary" onclick="avancarPara4()">
+              Continuar
+            </button>
+            <button class="btn-ghost" onclick="voltarPara(2)">Voltar</button>
+          </div>
 
-  <div class="painel-body">
-    <h2 class="painel-title">Agendamentos</h2>
-    <p class="painel-sub" id="painel-data-label">Selecione uma opção abaixo</p>
-
-    <!-- VISTA: DIA / MÊS -->
-    <div class="vista-tabs">
-      <button class="vista-tab active" onclick="trocarVista('vista-dia', this)">Por Dia</button>
-      <button class="vista-tab" onclick="trocarVista('vista-mes', this)">Por Mês</button>
-    </div>
-
-    <!-- VISTA DIA -->
-    <div id="vista-dia" class="vista-panel active">
-      <div class="painel-controls">
-        <div>
-          <div class="form-label" style="margin-bottom:6px">Data</div>
-          <input type="date" class="painel-date" id="painel-date" onchange="carregarAgendamentosPainel()">
-        </div>
-      </div>
-      <div class="painel-tabs" id="painel-tabs"></div>
-      <div id="painel-agendamentos">
-        <div class="empty-state">
-          <div class="empty-state-title">Selecione uma data</div>
-          <div class="empty-state-sub">para ver os agendamentos</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- VISTA MÊS -->
-    <div id="vista-mes" class="vista-panel">
-      <div class="painel-controls">
-        <div>
-          <div class="form-label" style="margin-bottom:6px">Mês</div>
-          <select class="painel-select" id="mes-select" onchange="carregarAgendamentosMes()">
-            <option value="1">Janeiro</option>
-            <option value="2">Fevereiro</option>
-            <option value="3">Março</option>
-            <option value="4">Abril</option>
-            <option value="5">Maio</option>
-            <option value="6">Junho</option>
-            <option value="7">Julho</option>
-            <option value="8">Agosto</option>
-            <option value="9">Setembro</option>
-            <option value="10">Outubro</option>
-            <option value="11">Novembro</option>
-            <option value="12">Dezembro</option>
-          </select>
-        </div>
-        <div>
-          <div class="form-label" style="margin-bottom:6px">Ano</div>
-          <select class="painel-select" id="ano-select" onchange="carregarAgendamentosMes()">
-            <option value="2025">2025</option>
-            <option value="2026" selected>2026</option>
-            <option value="2027">2027</option>
-          </select>
-        </div>
-        <div>
-          <div class="form-label" style="margin-bottom:6px">Profissional</div>
-          <select class="painel-select" id="mes-barbeiro-select" onchange="carregarAgendamentosMes()">
-            <option value="">Todos</option>
-          </select>
+          <div class="form-panel" id="panel-4">
+            <div class="summary-box" id="summary-box"></div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Nome completo</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="nome-input"
+                  placeholder="Seu nome"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Telefone</label>
+                <input
+                  type="tel"
+                  class="form-input"
+                  id="tel-input"
+                  placeholder="(79) 99999-9999"
+                  maxlength="15"
+                />
+              </div>
+            </div>
+            <button class="btn-primary" onclick="confirmarAgendamento()">
+              Confirmar Agendamento
+            </button>
+            <button class="btn-ghost" onclick="voltarPara(3)">Voltar</button>
+          </div>
         </div>
       </div>
 
-      <div id="mes-stats" class="mes-stats">
-        <div class="mes-stat"><div class="mes-stat-valor" id="stat-total">—</div><div class="mes-stat-label">Agendamentos</div></div>
-        <div class="mes-stat"><div class="mes-stat-valor" id="stat-valter">—</div><div class="mes-stat-label">Valter</div></div>
-        <div class="mes-stat"><div class="mes-stat-valor" id="stat-lipe">—</div><div class="mes-stat-label">Lipe</div></div>
+      <div class="footer">
+        <div class="footer-logo">Valter Cortes</div>
+        <div class="footer-text">
+          R. Itaporanga d'Ajuda, 7 · João Alves · Nossa Sra. do Socorro — SE<br />(79)
+          99837-1380 · Segunda a Sábado até as 18h
+        </div>
+      </div>
+      <div class="panel-link">
+        <a onclick="irPara('page-painel-login')">Acesso Profissional</a>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div id="page-success" class="page">
+      <div class="success-icon">✓</div>
+      <h2 class="success-title">Agendado!</h2>
+      <p class="success-sub">Seu horário foi reservado com sucesso</p>
+      <div class="success-details" id="success-details"></div>
+      <button
+        class="btn-primary"
+        style="max-width: 320px"
+        onclick="novoAgendamento()"
+      >
+        Fazer Novo Agendamento
+      </button>
+    </div>
+
+    <!-- PAINEL LOGIN -->
+    <div id="page-painel-login" class="page">
+      <div class="login-card">
+        <div class="login-eyebrow">Área Restrita</div>
+        <h2 class="login-title">Painel Profissional</h2>
+        <div id="painel-login-msg" class="msg"></div>
+        <div class="form-group">
+          <label class="form-label">Usuário</label>
+          <input
+            type="text"
+            class="form-input"
+            id="login-user"
+            placeholder="Usuário"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Senha</label>
+          <div style="position: relative">
+            <input
+              type="password"
+              class="form-input"
+              id="login-pass"
+              placeholder="••••••••"
+              style="padding-right: 90px"
+            />
+            <button
+              type="button"
+              id="toggleSenhaBtn"
+              onclick="toggleSenha()"
+              style="
+                position: absolute;
+                right: 16px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: none;
+                color: var(--gray);
+                font-family: &quot;Montserrat&quot;, sans-serif;
+                font-size: 10px;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                cursor: pointer;
+              "
+            >
+              Mostrar
+            </button>
+          </div>
+        </div>
+        <button
+          class="btn-primary"
+          onclick="loginPainel()"
+          style="margin-top: 8px"
+        >
+          Entrar
+        </button>
+        <button class="btn-ghost" onclick="irPara('page-booking')">
+          Voltar
+        </button>
+      </div>
+    </div>
+
+    <!-- PAINEL ADMIN -->
+    <div id="page-painel" class="page">
+      <div class="painel-header">
+        <div class="painel-logo">Valter Cortes · Painel</div>
+        <button class="btn-cancel" onclick="logoutPainel()">Sair</button>
       </div>
 
-      <div id="mes-agendamentos">
-        <div class="empty-state">
-          <div class="empty-state-title">Selecione um mês</div>
-          <div class="empty-state-sub">para ver os agendamentos</div>
+      <div class="painel-body">
+        <h2 class="painel-title">Agendamentos</h2>
+        <p class="painel-sub" id="painel-data-label">
+          Selecione uma opção abaixo
+        </p>
+
+        <!-- VISTA: DIA / MÊS -->
+        <div class="vista-tabs">
+          <button
+            class="vista-tab active"
+            onclick="trocarVista('vista-dia', this)"
+          >
+            Por Dia
+          </button>
+          <button class="vista-tab" onclick="trocarVista('vista-mes', this)">
+            Por Mês
+          </button>
+        </div>
+
+        <!-- VISTA DIA -->
+        <div id="vista-dia" class="vista-panel active">
+          <div class="painel-controls">
+            <div>
+              <div class="form-label" style="margin-bottom: 6px">Data</div>
+              <input
+                type="date"
+                class="painel-date"
+                id="painel-date"
+                onchange="carregarAgendamentosPainel()"
+              />
+            </div>
+          </div>
+          <div class="painel-tabs" id="painel-tabs"></div>
+          <div id="painel-agendamentos">
+            <div class="empty-state">
+              <div class="empty-state-title">Selecione uma data</div>
+              <div class="empty-state-sub">para ver os agendamentos</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VISTA MÊS -->
+        <div id="vista-mes" class="vista-panel">
+          <div class="painel-controls">
+            <div>
+              <div class="form-label" style="margin-bottom: 6px">Mês</div>
+              <select
+                class="painel-select"
+                id="mes-select"
+                onchange="carregarAgendamentosMes()"
+              >
+                <option value="1">Janeiro</option>
+                <option value="2">Fevereiro</option>
+                <option value="3">Março</option>
+                <option value="4">Abril</option>
+                <option value="5">Maio</option>
+                <option value="6">Junho</option>
+                <option value="7">Julho</option>
+                <option value="8">Agosto</option>
+                <option value="9">Setembro</option>
+                <option value="10">Outubro</option>
+                <option value="11">Novembro</option>
+                <option value="12">Dezembro</option>
+              </select>
+            </div>
+            <div>
+              <div class="form-label" style="margin-bottom: 6px">Ano</div>
+              <select
+                class="painel-select"
+                id="ano-select"
+                onchange="carregarAgendamentosMes()"
+              >
+                <option value="2025">2025</option>
+                <option value="2026" selected>2026</option>
+                <option value="2027">2027</option>
+              </select>
+            </div>
+            <div>
+              <div class="form-label" style="margin-bottom: 6px">
+                Profissional
+              </div>
+              <select
+                class="painel-select"
+                id="mes-barbeiro-select"
+                onchange="carregarAgendamentosMes()"
+              >
+                <option value="">Todos</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="mes-stats" class="mes-stats">
+            <div class="mes-stat">
+              <div class="mes-stat-valor" id="stat-total">—</div>
+              <div class="mes-stat-label">Agendamentos</div>
+            </div>
+            <div class="mes-stat">
+              <div class="mes-stat-valor" id="stat-valter">—</div>
+              <div class="mes-stat-label">Valter</div>
+            </div>
+            <div class="mes-stat">
+              <div class="mes-stat-valor" id="stat-lipe">—</div>
+              <div class="mes-stat-label">Lipe</div>
+            </div>
+          </div>
+
+          <div id="mes-agendamentos">
+            <div class="empty-state">
+              <div class="empty-state-title">Selecione um mês</div>
+              <div class="empty-state-sub">para ver os agendamentos</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-  </div>
-</div>
+    <div class="toast" id="toast"></div>
 
-<div class="toast" id="toast"></div>
+    <script>
+      const API = "https://barbearia-backend-moz5.onrender.com";
+      let authHeader = null;
+      let barbeiros = [];
+      let barbeiroAtivoId = null;
 
-<script>
-const API = 'https://barbearia-backend-moz5.onrender.com';
-let authHeader = null;
-let barbeiros = [];
-let barbeiroAtivoId = null;
+      let estado = { barbeiro: null, servico: null, data: null, hora: null };
 
-let estado = { barbeiro: null, servico: null, data: null, hora: null };
+      function irPara(pageId) {
+        document
+          .querySelectorAll(".page")
+          .forEach((p) => p.classList.remove("active"));
+        document.getElementById(pageId).classList.add("active");
+        window.scrollTo(0, 0);
+      }
 
-function irPara(pageId) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(pageId).classList.add('active');
-  window.scrollTo(0,0);
-}
+      function toast(msg, tipo = "success") {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.className = `toast show ${tipo}`;
+        setTimeout(() => (t.className = "toast"), 3000);
+      }
 
-function toast(msg, tipo = 'success') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = `toast show ${tipo}`;
-  setTimeout(() => t.className = 'toast', 3000);
-}
+      function mostrarMsg(id, msg, tipo) {
+        const el = document.getElementById(id);
+        el.className = `msg ${tipo}`;
+        el.textContent = msg;
+      }
 
-function mostrarMsg(id, msg, tipo) {
-  const el = document.getElementById(id);
-  el.className = `msg ${tipo}`;
-  el.textContent = msg;
-}
+      function irParaStep(num) {
+        for (let i = 1; i <= 4; i++) {
+          const step = document.getElementById(`step-${i}`);
+          const panel = document.getElementById(`panel-${i}`);
+          step.classList.remove("active", "done");
+          panel.classList.remove("active");
+          if (i < num) step.classList.add("done");
+          if (i === num) {
+            step.classList.add("active");
+            panel.classList.add("active");
+          }
+        }
+        document.getElementById("booking-msg").className = "msg";
+        document.getElementById("booking-msg").textContent = "";
+      }
 
-function irParaStep(num) {
-  for (let i = 1; i <= 4; i++) {
-    const step = document.getElementById(`step-${i}`);
-    const panel = document.getElementById(`panel-${i}`);
-    step.classList.remove('active', 'done');
-    panel.classList.remove('active');
-    if (i < num) step.classList.add('done');
-    if (i === num) { step.classList.add('active'); panel.classList.add('active'); }
-  }
-  document.getElementById('booking-msg').className = 'msg';
-  document.getElementById('booking-msg').textContent = '';
-}
+      function voltarPara(num) {
+        irParaStep(num);
+      }
+      function avancarPara2() {
+        if (!estado.barbeiro)
+          return mostrarMsg(
+            "booking-msg",
+            "Selecione um profissional.",
+            "error",
+          );
+        irParaStep(2);
+        carregarServicos();
+      }
+      function avancarPara3() {
+        if (!estado.servico)
+          return mostrarMsg("booking-msg", "Selecione um serviço.", "error");
+        irParaStep(3);
+        const today = new Date().toISOString().split("T")[0];
+        document.getElementById("data-input").min = today;
+      }
+      function avancarPara4() {
+        if (!estado.data)
+          return mostrarMsg("booking-msg", "Selecione uma data.", "error");
+        if (!estado.hora)
+          return mostrarMsg("booking-msg", "Selecione um horário.", "error");
+        irParaStep(4);
+        renderizarResumo();
+      }
 
-function voltarPara(num) { irParaStep(num); }
-function avancarPara2() { if (!estado.barbeiro) return mostrarMsg('booking-msg', 'Selecione um profissional.', 'error'); irParaStep(2); carregarServicos(); }
-function avancarPara3() { if (!estado.servico) return mostrarMsg('booking-msg', 'Selecione um serviço.', 'error'); irParaStep(3); const today = new Date().toISOString().split('T')[0]; document.getElementById('data-input').min = today; }
-function avancarPara4() { if (!estado.data) return mostrarMsg('booking-msg', 'Selecione uma data.', 'error'); if (!estado.hora) return mostrarMsg('booking-msg', 'Selecione um horário.', 'error'); irParaStep(4); renderizarResumo(); }
-
-async function carregarBarbeiros() {
-  try {
-    const res = await fetch(`${API}/barbeiros`);
-    const lista = await res.json();
-    const grid = document.getElementById('barber-grid');
-    grid.innerHTML = lista.map(b => `
+      async function carregarBarbeiros() {
+        try {
+          const res = await fetch(`${API}/barbeiros`);
+          const lista = await res.json();
+          const grid = document.getElementById("barber-grid");
+          grid.innerHTML = lista
+            .map(
+              (b) => `
       <div class="barber-card" onclick="selecionarBarbeiro(${b.id}, '${b.nome}', this)">
         <div class="barber-check">✓</div>
         <div class="barber-avatar">${b.nome.charAt(0)}</div>
         <div class="barber-name">${b.nome}</div>
-        <div class="barber-role">${b.nome === 'Valter' ? 'Fundador & Master' : 'Barbeiro'}</div>
-      </div>`).join('');
-  } catch { document.getElementById('barber-grid').innerHTML = '<div style="color:var(--danger);font-size:13px">Erro ao carregar profissionais.</div>'; }
-}
+        <div class="barber-role">${b.nome === "Valter" ? "Fundador & Master" : "Barbeiro"}</div>
+      </div>`,
+            )
+            .join("");
+        } catch {
+          document.getElementById("barber-grid").innerHTML =
+            '<div style="color:var(--danger);font-size:13px">Erro ao carregar profissionais.</div>';
+        }
+      }
 
-function selecionarBarbeiro(id, nome, el) {
-  document.querySelectorAll('.barber-card').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  estado.barbeiro = { id, nome };
-}
+      function selecionarBarbeiro(id, nome, el) {
+        document
+          .querySelectorAll(".barber-card")
+          .forEach((c) => c.classList.remove("selected"));
+        el.classList.add("selected");
+        estado.barbeiro = { id, nome };
+      }
 
-async function carregarServicos() {
-  try {
-    const res = await fetch(`${API}/servicos`);
-    const servicos = await res.json();
-    document.getElementById('service-list').innerHTML = servicos.map(s => `
+      async function carregarServicos() {
+        try {
+          const res = await fetch(`${API}/servicos`);
+          const servicos = await res.json();
+          document.getElementById("service-list").innerHTML = servicos
+            .map(
+              (s) => `
       <div class="service-item" onclick="selecionarServico(${s.id}, '${s.nome}', ${s.preco}, this)">
         <div class="service-name">${s.nome}</div>
-        <div class="service-price">R$ ${s.preco.toLocaleString('pt-BR', {minimumFractionDigits:2})}</div>
-      </div>`).join('');
-  } catch { document.getElementById('service-list').innerHTML = '<div style="color:var(--danger);font-size:13px">Erro ao carregar serviços.</div>'; }
-}
+        <div class="service-price">R$ ${s.preco.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</div>
+      </div>`,
+            )
+            .join("");
+        } catch {
+          document.getElementById("service-list").innerHTML =
+            '<div style="color:var(--danger);font-size:13px">Erro ao carregar serviços.</div>';
+        }
+      }
 
-function selecionarServico(id, nome, preco, el) {
-  document.querySelectorAll('.service-item').forEach(i => i.classList.remove('selected'));
-  el.classList.add('selected');
-  estado.servico = { id, nome, preco };
-}
+      function selecionarServico(id, nome, preco, el) {
+        document
+          .querySelectorAll(".service-item")
+          .forEach((i) => i.classList.remove("selected"));
+        el.classList.add("selected");
+        estado.servico = { id, nome, preco };
+      }
 
-async function carregarHorarios() {
-  const data = document.getElementById('data-input').value;
-  if (!data) return;
-  estado.data = data;
-  estado.hora = null;
-  const grid = document.getElementById('time-grid');
-  grid.innerHTML = '<div style="color:var(--gray);font-size:13px;grid-column:1/-1">Carregando horários...</div>';
+      async function carregarHorarios() {
+        const data = document.getElementById("data-input").value;
+        if (!data) return;
+        estado.data = data;
+        estado.hora = null;
+        const grid = document.getElementById("time-grid");
+        grid.innerHTML =
+          '<div style="color:var(--gray);font-size:13px;grid-column:1/-1">Carregando horários...</div>';
 
-  let ocupados = [];
-  try {
-    const res = await fetch(`${API}/agendamentos/horarios-ocupados?barbeiroId=${estado.barbeiro.id}&data=${data}`);
-    if (res.ok) ocupados = await res.json();
-  } catch {}
+        let ocupados = [];
+        try {
+          const res = await fetch(
+            `${API}/agendamentos/horarios-ocupados?barbeiroId=${estado.barbeiro.id}&data=${data}`,
+          );
+          if (res.ok) ocupados = await res.json();
+        } catch {}
 
-  const slots = [];
-  for (let h = 8; h < 18; h++) {
-    for (let m of [0, 30]) {
-      if (h === 17 && m === 30) break;
-      slots.push(`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`);
-    }
-  }
+        const slots = [];
+        for (let h = 8; h < 18; h++) {
+          for (let m of [0, 30]) {
+            if (h === 17 && m === 30) break;
+            slots.push(
+              `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`,
+            );
+          }
+        }
 
-  grid.innerHTML = slots.map(hora => {
-    const isOcupado = ocupados.includes(hora);
-    return `<div class="time-slot ${isOcupado ? 'occupied' : ''}" onclick="${isOcupado ? '' : `selecionarHora('${hora}', this)`}">${hora}</div>`;
-  }).join('');
-}
+        grid.innerHTML = slots
+          .map((hora) => {
+            const isOcupado = ocupados.includes(hora);
+            return `<div class="time-slot ${isOcupado ? "occupied" : ""}" onclick="${isOcupado ? "" : `selecionarHora('${hora}', this)`}">${hora}</div>`;
+          })
+          .join("");
+      }
 
-function selecionarHora(hora, el) {
-  document.querySelectorAll('.time-slot:not(.occupied)').forEach(s => s.classList.remove('selected'));
-  el.classList.add('selected');
-  estado.hora = hora;
-}
+      function selecionarHora(hora, el) {
+        document
+          .querySelectorAll(".time-slot:not(.occupied)")
+          .forEach((s) => s.classList.remove("selected"));
+        el.classList.add("selected");
+        estado.hora = hora;
+      }
 
-function renderizarResumo() {
-  const dataFormatada = new Date(estado.data + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
-  document.getElementById('summary-box').innerHTML = `
+      function renderizarResumo() {
+        const dataFormatada = new Date(
+          estado.data + "T12:00:00",
+        ).toLocaleDateString("pt-BR", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+        });
+        document.getElementById("summary-box").innerHTML = `
     <div class="summary-title">Resumo do Agendamento</div>
     <div class="summary-row"><span class="summary-row-label">Profissional</span><span class="summary-row-value">${estado.barbeiro.nome}</span></div>
     <div class="summary-row"><span class="summary-row-label">Serviço</span><span class="summary-row-value">${estado.servico.nome}</span></div>
     <div class="summary-row"><span class="summary-row-label">Data</span><span class="summary-row-value">${dataFormatada}</span></div>
     <div class="summary-row"><span class="summary-row-label">Horário</span><span class="summary-row-value">${estado.hora}</span></div>
-    <div class="summary-row"><span class="summary-row-label">Valor</span><span class="summary-row-value" style="color:var(--gold)">R$ ${estado.servico.preco.toLocaleString('pt-BR', {minimumFractionDigits:2})}</span></div>`;
-}
+    <div class="summary-row"><span class="summary-row-label">Valor</span><span class="summary-row-value" style="color:var(--gold)">R$ ${estado.servico.preco.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></div>`;
+      }
 
-async function confirmarAgendamento() {
-  const nome = document.getElementById('nome-input').value.trim();
-  const tel = document.getElementById('tel-input').value.trim();
-  const apenasNumeros = tel.replace(/\D/g, '');
-  if (!nome) return mostrarMsg('booking-msg', 'Informe seu nome.', 'error');
-  if (apenasNumeros.length !== 11) return mostrarMsg('booking-msg', 'Informe um telefone válido.', 'error');
+      async function confirmarAgendamento() {
+        const nome = document.getElementById("nome-input").value.trim();
+        const tel = document.getElementById("tel-input").value.trim();
+        const apenasNumeros = tel.replace(/\D/g, "");
+        if (!nome)
+          return mostrarMsg("booking-msg", "Informe seu nome.", "error");
+        if (apenasNumeros.length !== 11)
+          return mostrarMsg(
+            "booking-msg",
+            "Informe um telefone válido.",
+            "error",
+          );
 
-  try {
-    const res = await fetch(`${API}/agendamentos`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ barbeiroId: estado.barbeiro.id, servicoId: estado.servico.id, nomeCliente: nome, telefoneCliente: tel, dataHora: `${estado.data}T${estado.hora}:00` })
-    });
-    if (res.ok) {
-      const dataFormatada = new Date(estado.data + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
-      document.getElementById('success-details').innerHTML = `
+        try {
+          const res = await fetch(`${API}/agendamentos`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              barbeiroId: estado.barbeiro.id,
+              servicoId: estado.servico.id,
+              nomeCliente: nome,
+              telefoneCliente: tel,
+              dataHora: `${estado.data}T${estado.hora}:00`,
+            }),
+          });
+          if (res.ok) {
+            const dataFormatada = new Date(
+              estado.data + "T12:00:00",
+            ).toLocaleDateString("pt-BR", {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+            });
+            document.getElementById("success-details").innerHTML = `
         <div class="summary-row"><span class="summary-row-label">Profissional</span><span class="summary-row-value">${estado.barbeiro.nome}</span></div>
         <div class="summary-row"><span class="summary-row-label">Serviço</span><span class="summary-row-value">${estado.servico.nome}</span></div>
         <div class="summary-row"><span class="summary-row-label">Data & Hora</span><span class="summary-row-value">${dataFormatada} · ${estado.hora}</span></div>`;
-      irPara('page-success');
-    } else { mostrarMsg('booking-msg', await res.text(), 'error'); }
-  } catch { mostrarMsg('booking-msg', 'Erro ao conectar com o servidor.', 'error'); }
-}
+            irPara("page-success");
+          } else {
+            mostrarMsg("booking-msg", await res.text(), "error");
+          }
+        } catch {
+          mostrarMsg(
+            "booking-msg",
+            "Erro ao conectar com o servidor.",
+            "error",
+          );
+        }
+      }
 
-function novoAgendamento() {
-  estado = { barbeiro: null, servico: null, data: null, hora: null };
-  document.getElementById('nome-input').value = '';
-  document.getElementById('tel-input').value = '';
-  irParaStep(1);
-  irPara('page-booking');
-  carregarBarbeiros();
-}
+      function novoAgendamento() {
+        estado = { barbeiro: null, servico: null, data: null, hora: null };
+        document.getElementById("nome-input").value = "";
+        document.getElementById("tel-input").value = "";
+        irParaStep(1);
+        irPara("page-booking");
+        carregarBarbeiros();
+      }
 
-async function loginPainel() {
-  const user = document.getElementById('login-user').value.trim();
-  const pass = document.getElementById('login-pass').value;
-  if (!user || !pass) return mostrarMsg('painel-login-msg', 'Preencha todos os campos.', 'error');
-  const header = 'Basic ' + btoa(`${user}:${pass}`);
-  try {
-    const res = await fetch(`${API}/agendamentos?barbeiroId=1&data=${new Date().toISOString().split('T')[0]}`, { headers: { 'Authorization': header } });
-    if (res.ok || res.status === 200) {
-      authHeader = header;
-      irPara('page-painel');
-      const today = new Date().toISOString().split('T')[0];
-      document.getElementById('painel-date').value = today;
-      document.getElementById('mes-select').value = new Date().getMonth() + 1;
-      await carregarBarbeirosPainel();
-    } else { mostrarMsg('painel-login-msg', 'Credenciais inválidas.', 'error'); }
-  } catch { mostrarMsg('painel-login-msg', 'Erro ao conectar com o servidor.', 'error'); }
-}
+      async function loginPainel() {
+        const user = document.getElementById("login-user").value.trim();
+        const pass = document.getElementById("login-pass").value;
+        if (!user || !pass)
+          return mostrarMsg(
+            "painel-login-msg",
+            "Preencha todos os campos.",
+            "error",
+          );
+        const header = "Basic " + btoa(`${user}:${pass}`);
+        try {
+          const res = await fetch(
+            `${API}/agendamentos?barbeiroId=1&data=${new Date().toISOString().split("T")[0]}`,
+            { headers: { Authorization: header } },
+          );
+          if (res.ok || res.status === 200) {
+            authHeader = header;
+            irPara("page-painel");
+            const today = new Date().toISOString().split("T")[0];
+            document.getElementById("painel-date").value = today;
+            document.getElementById("mes-select").value =
+              new Date().getMonth() + 1;
+            await carregarBarbeirosPainel();
+          } else {
+            mostrarMsg("painel-login-msg", "Credenciais inválidas.", "error");
+          }
+        } catch {
+          mostrarMsg(
+            "painel-login-msg",
+            "Erro ao conectar com o servidor.",
+            "error",
+          );
+        }
+      }
 
-function logoutPainel() { authHeader = null; document.getElementById('login-pass').value = ''; irPara('page-booking'); }
+      function logoutPainel() {
+        authHeader = null;
+        document.getElementById("login-pass").value = "";
+        irPara("page-booking");
+      }
 
-function trocarVista(vistaId, btn) {
-  document.querySelectorAll('.vista-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.vista-panel').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById(vistaId).classList.add('active');
-}
+      function trocarVista(vistaId, btn) {
+        document
+          .querySelectorAll(".vista-tab")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".vista-panel")
+          .forEach((p) => p.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById(vistaId).classList.add("active");
+      }
 
-async function carregarBarbeirosPainel() {
-  try {
-    const res = await fetch(`${API}/barbeiros`);
-    barbeiros = await res.json();
-    renderizarTabsPainel();
-    preencherSelectMesBarbeiro();
-    carregarAgendamentosPainel();
-  } catch {}
-}
+      async function carregarBarbeirosPainel() {
+        try {
+          const res = await fetch(`${API}/barbeiros`);
+          barbeiros = await res.json();
+          renderizarTabsPainel();
+          preencherSelectMesBarbeiro();
+          carregarAgendamentosPainel();
+        } catch {}
+      }
 
-function preencherSelectMesBarbeiro() {
-  const sel = document.getElementById('mes-barbeiro-select');
-  sel.innerHTML = '<option value="">Todos</option>' + barbeiros.map(b => `<option value="${b.id}">${b.nome}</option>`).join('');
-}
+      function preencherSelectMesBarbeiro() {
+        const sel = document.getElementById("mes-barbeiro-select");
+        sel.innerHTML =
+          '<option value="">Todos</option>' +
+          barbeiros
+            .map((b) => `<option value="${b.id}">${b.nome}</option>`)
+            .join("");
+      }
 
-function renderizarTabsPainel() {
-  const tabs = document.getElementById('painel-tabs');
-  tabs.innerHTML = barbeiros.map((b, i) => `<button class="painel-tab ${i === 0 ? 'active' : ''}" onclick="trocarBarbeiroPainel(${b.id}, this)">${b.nome}</button>`).join('');
-  if (barbeiros.length > 0) barbeiroAtivoId = barbeiros[0].id;
-}
+      function renderizarTabsPainel() {
+        const tabs = document.getElementById("painel-tabs");
+        tabs.innerHTML = barbeiros
+          .map(
+            (b, i) =>
+              `<button class="painel-tab ${i === 0 ? "active" : ""}" onclick="trocarBarbeiroPainel(${b.id}, this)">${b.nome}</button>`,
+          )
+          .join("");
+        if (barbeiros.length > 0) barbeiroAtivoId = barbeiros[0].id;
+      }
 
-function trocarBarbeiroPainel(id, btn) {
-  document.querySelectorAll('.painel-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  barbeiroAtivoId = id;
-  carregarAgendamentosPainel();
-}
+      function trocarBarbeiroPainel(id, btn) {
+        document
+          .querySelectorAll(".painel-tab")
+          .forEach((t) => t.classList.remove("active"));
+        btn.classList.add("active");
+        barbeiroAtivoId = id;
+        carregarAgendamentosPainel();
+      }
 
-async function carregarAgendamentosPainel() {
-  const data = document.getElementById('painel-date').value;
-  if (!data || !barbeiroAtivoId) return;
-  document.getElementById('painel-data-label').textContent = new Date(data + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-  const container = document.getElementById('painel-agendamentos');
-  container.innerHTML = '<div style="color:var(--gray);padding:24px;font-size:13px">Carregando...</div>';
-  try {
-    const res = await fetch(`${API}/agendamentos?barbeiroId=${barbeiroAtivoId}&data=${data}`, { headers: { 'Authorization': authHeader } });
-    const agendamentos = await res.json();
-    if (agendamentos.length === 0) { container.innerHTML = `<div class="empty-state"><div class="empty-state-title">Nenhum agendamento</div><div class="empty-state-sub">para esta data</div></div>`; return; }
-    agendamentos.sort((a, b) => a.dataHora.localeCompare(b.dataHora));
-    container.innerHTML = agendamentos.map(a => `
+      async function carregarAgendamentosPainel() {
+        const data = document.getElementById("painel-date").value;
+        if (!data || !barbeiroAtivoId) return;
+        document.getElementById("painel-data-label").textContent = new Date(
+          data + "T12:00:00",
+        ).toLocaleDateString("pt-BR", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        });
+        const container = document.getElementById("painel-agendamentos");
+        container.innerHTML =
+          '<div style="color:var(--gray);padding:24px;font-size:13px">Carregando...</div>';
+        try {
+          const res = await fetch(
+            `${API}/agendamentos?barbeiroId=${barbeiroAtivoId}&data=${data}`,
+            { headers: { Authorization: authHeader } },
+          );
+          const agendamentos = await res.json();
+          if (agendamentos.length === 0) {
+            container.innerHTML = `<div class="empty-state"><div class="empty-state-title">Nenhum agendamento</div><div class="empty-state-sub">para esta data</div></div>`;
+            return;
+          }
+          agendamentos.sort((a, b) => a.dataHora.localeCompare(b.dataHora));
+          container.innerHTML = agendamentos
+            .map(
+              (a) => `
       <div class="agendamento-card" id="card-${a.id}">
-        <div class="agendamento-hora">${a.dataHora.substring(11,16)}</div>
+        <div class="agendamento-hora">${a.dataHora.substring(11, 16)}</div>
         <div class="agendamento-divider"></div>
         <div class="agendamento-info">
           <div class="agendamento-cliente">${a.nomeCliente}</div>
           <div class="agendamento-detalhes">${a.servico.nome} · ${a.telefoneCliente}</div>
         </div>
         <button class="btn-cancel" onclick="cancelarAgendamento(${a.id})">Cancelar</button>
-      </div>`).join('');
-  } catch { container.innerHTML = '<div style="color:var(--danger);padding:24px;font-size:13px">Erro ao carregar agendamentos.</div>'; }
-}
+      </div>`,
+            )
+            .join("");
+        } catch {
+          container.innerHTML =
+            '<div style="color:var(--danger);padding:24px;font-size:13px">Erro ao carregar agendamentos.</div>';
+        }
+      }
 
-async function carregarAgendamentosMes() {
-  const mes = document.getElementById('mes-select').value;
-  const ano = document.getElementById('ano-select').value;
-  const barbeiroFiltro = document.getElementById('mes-barbeiro-select').value;
-  const container = document.getElementById('mes-agendamentos');
-  container.innerHTML = '<div style="color:var(--gray);padding:24px;font-size:13px">Carregando...</div>';
+      async function carregarAgendamentosMes() {
+        const mes = document.getElementById("mes-select").value;
+        const ano = document.getElementById("ano-select").value;
+        const barbeiroFiltro = document.getElementById(
+          "mes-barbeiro-select",
+        ).value;
+        const container = document.getElementById("mes-agendamentos");
+        container.innerHTML =
+          '<div style="color:var(--gray);padding:24px;font-size:13px">Carregando...</div>';
 
-  try {
-    let todos = [];
+        try {
+          let todos = [];
 
-    if (barbeiroFiltro) {
-      const res = await fetch(`${API}/agendamentos/mes?barbeiroId=${barbeiroFiltro}&ano=${ano}&mes=${mes}`, { headers: { 'Authorization': authHeader } });
-      todos = await res.json();
-    } else {
-      const promises = barbeiros.map(b => fetch(`${API}/agendamentos/mes?barbeiroId=${b.id}&ano=${ano}&mes=${mes}`, { headers: { 'Authorization': authHeader } }).then(r => r.json()));
-      const resultados = await Promise.all(promises);
-      todos = resultados.flat();
-    }
+          if (barbeiroFiltro) {
+            const res = await fetch(
+              `${API}/agendamentos/mes?barbeiroId=${barbeiroFiltro}&ano=${ano}&mes=${mes}`,
+              { headers: { Authorization: authHeader } },
+            );
+            todos = await res.json();
+          } else {
+            const promises = barbeiros.map((b) =>
+              fetch(
+                `${API}/agendamentos/mes?barbeiroId=${b.id}&ano=${ano}&mes=${mes}`,
+                { headers: { Authorization: authHeader } },
+              ).then((r) => r.json()),
+            );
+            const resultados = await Promise.all(promises);
+            todos = resultados.flat();
+          }
 
-    todos.sort((a, b) => a.dataHora.localeCompare(b.dataHora));
+          todos.sort((a, b) => a.dataHora.localeCompare(b.dataHora));
 
-    // Stats
-    document.getElementById('stat-total').textContent = todos.length;
-    document.getElementById('stat-valter').textContent = todos.filter(a => a.barbeiro?.nome === 'Valter').length;
-    document.getElementById('stat-lipe').textContent = todos.filter(a => a.barbeiro?.nome === 'Lipe').length;
+          // Stats
+          document.getElementById("stat-total").textContent = todos.length;
+          document.getElementById("stat-valter").textContent = todos.filter(
+            (a) => a.barbeiro?.nome === "Valter",
+          ).length;
+          document.getElementById("stat-lipe").textContent = todos.filter(
+            (a) => a.barbeiro?.nome === "Lipe",
+          ).length;
 
-    if (todos.length === 0) {
-      container.innerHTML = `<div class="empty-state"><div class="empty-state-title">Nenhum agendamento</div><div class="empty-state-sub">neste mês</div></div>`;
-      return;
-    }
+          if (todos.length === 0) {
+            container.innerHTML = `<div class="empty-state"><div class="empty-state-title">Nenhum agendamento</div><div class="empty-state-sub">neste mês</div></div>`;
+            return;
+          }
 
-    container.innerHTML = todos.map(a => {
-      const dataFormatada = new Date(a.dataHora + 'Z').toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', weekday: 'short' });
-      const hora = a.dataHora.substring(11, 16);
-      return `
+          container.innerHTML = todos
+            .map((a) => {
+              const dataFormatada = new Date(
+                a.dataHora + "Z",
+              ).toLocaleDateString("pt-BR", {
+                day: "numeric",
+                month: "short",
+                weekday: "short",
+              });
+              const hora = a.dataHora.substring(11, 16);
+              return `
         <div class="mes-agendamento-card" id="card-${a.id}">
           <div class="mes-data">${dataFormatada} · ${hora}</div>
           <div class="mes-info">
             <div class="mes-cliente">${a.nomeCliente}</div>
-            <div class="mes-detalhe">${a.servico.nome} · ${a.barbeiro?.nome || ''}</div>
+            <div class="mes-detalhe">${a.servico.nome} · ${a.barbeiro?.nome || ""}</div>
           </div>
           <button class="btn-cancel" onclick="cancelarAgendamentoMes(${a.id})">Cancelar</button>
         </div>`;
-    }).join('');
-  } catch { container.innerHTML = '<div style="color:var(--danger);padding:24px;font-size:13px">Erro ao carregar.</div>'; }
-}
+            })
+            .join("");
+        } catch {
+          container.innerHTML =
+            '<div style="color:var(--danger);padding:24px;font-size:13px">Erro ao carregar.</div>';
+        }
+      }
 
-async function cancelarAgendamento(id) {
-  if (!confirm('Cancelar este agendamento?')) return;
-  try {
-    const res = await fetch(`${API}/agendamentos/${id}`, { method: 'DELETE', headers: { 'Authorization': authHeader } });
-    if (res.ok) { toast('Agendamento cancelado.'); carregarAgendamentosPainel(); }
-  } catch { toast('Erro ao cancelar.', 'error'); }
-}
+      async function cancelarAgendamento(id) {
+        if (!confirm("Cancelar este agendamento?")) return;
+        try {
+          const res = await fetch(`${API}/agendamentos/${id}`, {
+            method: "DELETE",
+            headers: { Authorization: authHeader },
+          });
+          if (res.ok) {
+            toast("Agendamento cancelado.");
+            carregarAgendamentosPainel();
+          }
+        } catch {
+          toast("Erro ao cancelar.", "error");
+        }
+      }
 
-async function cancelarAgendamentoMes(id) {
-  if (!confirm('Cancelar este agendamento?')) return;
-  try {
-    const res = await fetch(`${API}/agendamentos/${id}`, { method: 'DELETE', headers: { 'Authorization': authHeader } });
-    if (res.ok) { toast('Agendamento cancelado.'); carregarAgendamentosMes(); }
-  } catch { toast('Erro ao cancelar.', 'error'); }
-}
+      async function cancelarAgendamentoMes(id) {
+        if (!confirm("Cancelar este agendamento?")) return;
+        try {
+          const res = await fetch(`${API}/agendamentos/${id}`, {
+            method: "DELETE",
+            headers: { Authorization: authHeader },
+          });
+          if (res.ok) {
+            toast("Agendamento cancelado.");
+            carregarAgendamentosMes();
+          }
+        } catch {
+          toast("Erro ao cancelar.", "error");
+        }
+      }
 
-function toggleSenha() {
-  const input = document.getElementById('login-pass');
-  const btn = document.getElementById('toggleSenhaBtn');
-  if (input.type === 'password') { input.type = 'text'; btn.textContent = 'Ocultar'; }
-  else { input.type = 'password'; btn.textContent = 'Mostrar'; }
-}
+      function toggleSenha() {
+        const input = document.getElementById("login-pass");
+        const btn = document.getElementById("toggleSenhaBtn");
+        if (input.type === "password") {
+          input.type = "text";
+          btn.textContent = "Ocultar";
+        } else {
+          input.type = "password";
+          btn.textContent = "Mostrar";
+        }
+      }
 
-document.getElementById('tel-input').addEventListener('input', function () {
-  let valor = this.value.replace(/\D/g, '').substring(0, 11);
-  if (valor.length > 10) valor = valor.replace(/^(\d{2})(\d{5})(\d{0,4}).*/, '($1) $2-$3');
-  else if (valor.length > 6) valor = valor.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
-  else if (valor.length > 2) valor = valor.replace(/^(\d{2})(\d+)/, '($1) $2');
-  else if (valor.length > 0) valor = valor.replace(/^(\d*)/, '($1');
-  this.value = valor;
-});
+      document
+        .getElementById("tel-input")
+        .addEventListener("input", function () {
+          let valor = this.value.replace(/\D/g, "").substring(0, 11);
+          if (valor.length > 10)
+            valor = valor.replace(/^(\d{2})(\d{5})(\d{0,4}).*/, "($1) $2-$3");
+          else if (valor.length > 6)
+            valor = valor.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, "($1) $2-$3");
+          else if (valor.length > 2)
+            valor = valor.replace(/^(\d{2})(\d+)/, "($1) $2");
+          else if (valor.length > 0) valor = valor.replace(/^(\d*)/, "($1");
+          this.value = valor;
+        });
 
-carregarBarbeiros();
-document.getElementById('login-pass')?.addEventListener('keydown', e => { if (e.key === 'Enter') loginPainel(); });
-</script>
-</body>
+      carregarBarbeiros();
+      document
+        .getElementById("login-pass")
+        ?.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") loginPainel();
+        });
+    </script>
+  </body>
 </html>

@@ -1525,10 +1525,25 @@
         document.getElementById("data-input").min = today;
       }
       function avancarPara4() {
-        if (!estado.data)
-          return mostrarMsg("booking-msg", "Selecione uma data.", "error");
-        if (!estado.hora)
-          return mostrarMsg("booking-msg", "Selecione um horário.", "error");
+        const data = document.getElementById('data-input').value;
+        const hoje = new Date().toISOString().split('T')[0];
+
+        if (!data) {
+          return mostrarMsg('booking-msg', 'Selecione uma data.', 'error');
+        }
+
+        if (data < hoje) {
+          return mostrarMsg(
+            'booking-msg',
+            'Selecione uma data igual ou posterior à data atual.',
+            'error'
+          );
+        }
+
+        if (!estado.hora) {
+          return mostrarMsg('booking-msg', 'Selecione um horário.', 'error');
+        }
+
         irParaStep(4);
         renderizarResumo();
       }
